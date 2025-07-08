@@ -1,0 +1,9 @@
+:root {
+    --gutter-x: 1.5rem;
+    --gutter-y: 1.5rem;
+}
+
+.row {
+    --gutter-x: 1.5rem;
+    --gutter-y: 0rem;
+}

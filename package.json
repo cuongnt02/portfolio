@@ -7,7 +7,18 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest",
+    "test-ui": "vitest --ui",
+    "test:run": "vitest run",
+    "docker:build:dev": "docker build --target dev -t portfolio:dev .",
+    "docker:build:debug": "docker build --target debug -t portforlio:debug .",
+    "docker:build:test": "docker build --target test -t portfolio:test .",
+    "docker:build:prod": "docker build --target prod -t portfolio:prod .",
+    "docker:run:dev": "docker run -p 5173:5173 -v $(pwd):/app -v /app/node_modules portfolio:dev",
+    "docker:run:debug": "docker run -p 5173:5173 -p 9229:9229 -v $(pwd):/app -v /app/node_modules portfolio:debug",
+    "docker:run:test": "docker run portfolio:test",
+    "docker:run:prod": "docker run -p 80:80 portfolio:prod"
   },
   "dependencies": {
     "react": "^19.1.0",

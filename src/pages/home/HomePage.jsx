@@ -1,5 +1,7 @@
 import './HomePage.css'
 import Hero from "@pages/home/Hero.jsx";
+import '@styles/variables.css'
+import '@styles/layout.css'
 
 const HomePage = () => {
     return (

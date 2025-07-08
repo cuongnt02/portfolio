@@ -1,0 +1,37 @@
+.clip-animation {
+    transition: clip-path .3s ease;
+    clip-path: polygon(-2% 0%, 100% 0%, 105% 100%, 0% 100%)
+}
+
+.clip-hidden-left {
+    clip-path: polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%);
+}
+
+.clip-hidden-right {
+    clip-path: polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%);
+}
+
+
+.clip-hidden-center {
+    clip-path: polygon(50% 0%, 50% 0%, 50% 100%, 50% 100%);
+}
+
+.clip-hidden-top {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+}
+
+.clip-visible {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.clip-fast {
+    transition-duration: 0.4s;
+}
+
+.clip-slow {
+    transition-duration: 1.2s;
+}
+
+.clip-bounce {
+    transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
