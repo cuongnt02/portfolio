@@ -43,7 +43,7 @@ jobs:
       - name: Run build + deploy
         run: |
           ansible-playbook build.yml
-          ansible-playbook -i ${{ secrets.PORTFOLIO_VPS_HOST }}, deploy.yaml
+          ansible-playbook -i ${{ secrets.PORTFOLIO_VPS_HOST }}, deploy.yml
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
