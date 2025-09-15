@@ -15,13 +15,17 @@
         msg: "Frontend dist not found. Did you forget to upload/download artifact?"
       when: not dist_dir.stat.exists
 
-    - name: Build Docker image
-      shell: |
-        cd portfolio-server
-        docker build -t {{ dockerhub_username }}/portfolio:{{ release_version }} .
-
     - name: Login to DockerHub
       shell: echo "{{ dockerhub_password }}" | docker login -u "{{ dockerhub_username }}" --password-stdin
 
     - name: Push Docker image
       shell: docker push {{ dockerhub_username }}/portfolio:{{ release_version }}
+
+    - name: Build + Push Docker image
+      community.docker.docker_image:
+        name: "cuongnt02/portfolio"
+        build:
+          path: "portfolio-server"
+        tag: "{{ backend_version }}"
+        push: true
+        source: build
