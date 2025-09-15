@@ -28,6 +28,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: frontend-dist
+          github_token: ${{ secrets.GITHUB_PAT }}
+          repository: cuongnt02/portfolio-client
           path: portfolio-server/dist
 
       - name: Configure SSH
