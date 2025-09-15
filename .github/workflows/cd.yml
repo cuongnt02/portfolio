@@ -27,8 +27,9 @@ jobs:
         if: github.event.action == 'frontend-release'
         uses: actions/download-artifact@v4
         with:
-          name: frontend-dist
           github_token: ${{ secrets.PAT }}
+          repository: cuongnt02/portfolio-client
+          name: frontend-dist
           path: portfolio-server/dist
 
       - name: Configure SSH
