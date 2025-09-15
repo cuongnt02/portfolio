@@ -4,6 +4,9 @@ on:
   repository_dispatch:
     types: [frontend-release, backend-release]
 
+env:
+  SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -36,14 +39,23 @@ jobs:
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H ${{ secrets.PORTFOLIO_VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Setup SSH passphrase
+        env:
+          SSH_PASSPHRASE: ${{ secrets.VPS_SSH_PASSPHRASE }}
+          SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          echo 'echo $SSH_PASSPHRASE' > ~/.ssh_askpass && chmod +x ~/.ssh_askpass
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | DISPLAY=None SSH_ASKPASS=~/.ssh_askpass ssh-add - >/dev/null
 
       - name: Run build + deploy
         run: |
           ansible-playbook build.yml
-          ansible-playbook -i ${{ secrets.PORTFOLIO_VPS_HOST }}, deploy.yml
+          ansible-playbook -i ${{ secrets.PORTFOLIO_VPS_HOST }}, --key-file=~/.ssh/id_ed25519 -e ansible_become_pass=${{ secrets.ANSIBLE_BECOME_PASS }} deploy.yml
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
