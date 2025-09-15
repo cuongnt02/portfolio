@@ -19,7 +19,7 @@ jobs:
       - name: Checkout backend repo
         uses: actions/checkout@v4
         with:
-          repository: youruser/portfolio-server
+          repository: cuongnt02/portfolio-server
           path: portfolio-server
 
       # Only fetch frontend dist if frontend release
