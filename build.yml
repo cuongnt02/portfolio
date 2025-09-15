@@ -1,0 +1,69 @@
+- name: Build and push portfolio app (local build)
+  hosts: localhost
+  vars:
+    frontend_repo: "https://github.com/cuongnt02/portfolio-client.git"
+    backend_repo: "https://github.com/cuongnt02/portfolio-server.git"
+    frontend_version: "{{ lookup('env', 'FRONTEND_VERSION') | default('latest') }}"
+    backend_version: "{{ lookup('env', 'BACKEND_VERSION') | default('latest') }}"
+    dockerhub_username: "{{ lookup('env', 'DOCKERHUB_USERNAME') }}"
+    dockerhub_password: "{{ lookup('env', 'DOCKERHUB_PASSWORD') }}"
+    docker_image: "{{ dockerhub_username }}/portfolio"
+    build_dir: "/tmp/portfolio-build"
+
+  tasks:
+    - name: Ensure clean build dir
+      file:
+        path: "{{ build_dir }}"
+        state: absent
+      ignore_errors: yes
+
+    - name: Recreate build dir
+      file:
+        path: "{{ build_dir }}"
+        state: directory
+
+    - name: Clone frontend repo
+      git:
+        repo: "{{ frontend_repo }}"
+        version: "{{ frontend_version }}"
+        dest: "{{ build_dir }}/portfolio-client"
+
+    - name: Install frontend deps
+      command: npm ci
+      args:
+        chdir: "{{ build_dir }}/portfolio-client"
+
+    - name: Build frontend
+      command: npm run build
+      args:
+        chdir: "{{ build_dir }}/portfolio-client"
+
+    - name: Clone backend repo
+      git:
+        repo: "{{ backend_repo }}"
+        version: "{{ backend_version }}"
+        dest: "{{ build_dir }}/portfolio-server"
+
+    - name: Copy frontend dist into backend public/
+      synchronize:
+        src: "{{ build_dir }}/portfolio-client/dist/"
+        dest: "{{ build_dir }}/portfolio-server/public/"
+        recursive: yes
+
+    - name: Ensure the current dockerhub process is logged out
+      community.docker.docker_login:
+        state: absent
+
+    - name: Log in to DockerHub
+      community.docker.docker_login:
+        username: "{{ dockerhub_username }}"
+        password: "{{ dockerhub_password }}"
+
+    - name: Build + Push Docker image
+      community.docker.docker_image:
+        name: "{{ docker_image }}"
+        build:
+          path: "{{ build_dir }}/portfolio-server"
+        tag: "{{ backend_version }}"
+        push: true
+        source: build

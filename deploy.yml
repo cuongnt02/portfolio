@@ -1,0 +1,30 @@
+- name: Deploy portfolio container on VPS
+  hosts: all
+  become: true
+  vars:
+    dockerhub_username: "{{ lookup('env', 'DOCKERHUB_USERNAME') }}"
+    backend_version: "{{ lookup('env', 'BACKEND_VERSION') | default('latest') }}"
+    docker_image: "{{ dockerhub_username }}/portfolio"
+    app_port: "{{ lookup('env', 'APP_PORT') | default('3000') }}"
+
+  tasks:
+    - name: Ensure Docker installed
+      ansible.builtin.dnf:
+        name: docker
+        state: present
+        update_cache: yes
+
+    - name: Pull Docker image
+      community.docker.docker_image:
+        name: "{{ docker_image }}"
+        tag: "latest"
+        source: pull
+
+    - name: Run container
+      community.docker.docker_container:
+        name: portfolio
+        image: "{{ docker_image }}:{{ backend_version }}"
+        state: started
+        restart_policy: always
+        published_ports:
+          - "80:{{ app_port }}"

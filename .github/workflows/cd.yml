@@ -1,0 +1,50 @@
+name: CD Pipeline
+
+on:
+  repository_dispatch:
+    types: [frontend-release, backend-release]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: pip install ansible docker
+
+      # Always checkout backend
+      - name: Checkout backend repo
+        uses: actions/checkout@v4
+        with:
+          repository: youruser/portfolio-server
+          path: portfolio-server
+
+      # Only fetch frontend dist if frontend release
+      - name: Download frontend dist
+        if: github.event.action == 'frontend-release'
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: portfolio-server/dist
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.PORTFOLIO_VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Run build + deploy
+        run: |
+          ansible-playbook ansible/build.yml
+          ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          PORTFOLIO_VPS_HOST: ${{ secrets.PORTFOLIO_VPS_HOST }}
+          PORTFOLIO_VPS_USER: ${{ secrets.PORTFOLIO_VPS_USER }}
+          RELEASE_VERSION: ${{ github.event.client_payload.version }}
+          GITHUB_EVENT_TYPE: ${{ github.event.action }}
