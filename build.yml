@@ -7,7 +7,7 @@
   tasks:
     - name: Ensure frontend dist exists
       stat:
-        path: portfolio-server/dist
+        path: portfolio-server/dist-frontend
       register: dist_dir
 
     - name: Fail if dist is missing
