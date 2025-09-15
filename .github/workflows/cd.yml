@@ -25,11 +25,12 @@ jobs:
       # Only fetch frontend dist if frontend release
       - name: Download frontend dist
         if: github.event.action == 'frontend-release'
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v4
         with:
+          name: frontend-dist
           github-token: ${{ secrets.PAT }}
           repository: cuongnt02/portfolio-client
-          name: frontend-dist
+          run-id: ${{ github.event.client_payload.frontend_run_id }}
           path: portfolio-server/dist
 
       - name: Configure SSH
