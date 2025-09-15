@@ -42,8 +42,8 @@ jobs:
 
       - name: Run build + deploy
         run: |
-          ansible-playbook ansible/build.yml
-          ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
+          ansible-playbook build.yml
+          ansible-playbook -i inventory.ini ansible/deploy.yml
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
