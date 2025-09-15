@@ -61,6 +61,7 @@ jobs:
           RELEASE_VERSION: ${{ github.event.client_payload.version }}
           GITHUB_EVENT_TYPE: ${{ github.event.action }}
           ANSIBLE_BECOME_PASS: ${{ secrets.ANSIBLE_BECOME_PASS }}
+          APP_PORT: ${{ secrets.APP_PORT }}
         run: |
           ansible-playbook build.yml
-          ansible-playbook -i $PORTFOLIO_VPS_HOST, --user=$PORTFOLIO_VPS_USER --key-file=~/.ssh/id_ed25519 -e ansible_become_pass=$ANSIBLE_BECOME_PASS deploy.yml
+          ansible-playbook -i $PORTFOLIO_VPS_HOST, --user=$PORTFOLIO_VPS_USER --key-file=~/.ssh/id_ed25519 -e ansible_become_pass=$ANSIBLE_BECOME_PASS -e release_version=$RELEASE_VERSION -e app_port=$APP_PORT deploy.yml

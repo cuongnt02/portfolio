@@ -4,6 +4,7 @@
   vars:
     dockerhub_username: "{{ lookup('env', 'DOCKERHUB_USERNAME') }}"
     backend_version: "{{ lookup('env', 'BACKEND_VERSION') | default('latest') }}"
+    release_version: "{{ lookup('env', 'RELEASE_VERSION') | default('latest') }}"
     docker_image: "{{ dockerhub_username }}/portfolio"
     app_port: "{{ lookup('env', 'APP_PORT') | default('3000') }}"
 
@@ -23,7 +24,7 @@
     - name: Run container
       community.docker.docker_container:
         name: portfolio
-        image: "{{ docker_image }}:{{ backend_version }}"
+        image: "{{ docker_image }}:{{ release_version }}"
         state: started
         restart_policy: always
         published_ports:
