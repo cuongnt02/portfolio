@@ -34,7 +34,7 @@ jobs:
           github-token: ${{ secrets.PAT }}
           repository: cuongnt02/portfolio-client
           run-id: ${{ github.event.client_payload.frontend_run_id }}
-          path: portfolio-server/dist
+          path: portfolio-server/dist-frontend
 
       - name: Configure SSH
         run: |
