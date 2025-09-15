@@ -23,6 +23,6 @@
         name: "cuongnt02/portfolio"
         build:
           path: "portfolio-server"
-        tag: "{{ backend_version }}"
+        tag: "{{ release_version }}"
         push: true
         source: build
