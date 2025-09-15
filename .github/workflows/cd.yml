@@ -53,9 +53,6 @@ jobs:
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | DISPLAY=None SSH_ASKPASS=~/.ssh_askpass ssh-add - >/dev/null
 
       - name: Run build + deploy
-        run: |
-          ansible-playbook build.yml
-          ansible-playbook -i ${{ secrets.PORTFOLIO_VPS_HOST }}, --key-file=~/.ssh/id_ed25519 -e ansible_become_pass=${{ secrets.ANSIBLE_BECOME_PASS }} deploy.yml
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -63,3 +60,7 @@ jobs:
           PORTFOLIO_VPS_USER: ${{ secrets.PORTFOLIO_VPS_USER }}
           RELEASE_VERSION: ${{ github.event.client_payload.version }}
           GITHUB_EVENT_TYPE: ${{ github.event.action }}
+          ANSIBLE_BECOME_PASS: ${{ secrets.ANSIBLE_BECOME_PASS }}
+        run: |
+          ansible-playbook build.yml
+          ansible-playbook -i $PORTFOLIO_VPS_HOST, --user=$PORTFOLIO_VPS_USER --key-file=~/.ssh/id_ed25519 -e ansible_become_pass=$ANSIBLE_BECOME_PASS deploy.yml
