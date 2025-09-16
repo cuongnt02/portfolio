@@ -34,7 +34,11 @@ jobs:
           github-token: ${{ secrets.PAT }}
           repository: cuongnt02/portfolio-client
           run-id: ${{ github.event.client_payload.frontend_run_id }}
-          path: portfolio-server/dist-frontend
+          path: portfolio-server/dist-frontend/
+
+
+      - name: Check folder structure of artifact
+        run: ls -rtl portfolio-server/dist-frontend
 
       - name: Configure SSH
         run: |
