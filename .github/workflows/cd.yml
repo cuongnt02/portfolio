@@ -18,24 +18,6 @@ jobs:
           python-version: "3.x"
       - run: pip install ansible docker
 
-      # Always checkout backend
-      - name: Checkout backend repo
-        uses: actions/checkout@v4
-        with:
-          repository: cuongnt02/portfolio-server
-          path: portfolio-server
-
-      # Only fetch frontend dist if frontend release
-      - name: Download frontend dist
-        if: github.event.action == 'frontend-release'
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-dist
-          github-token: ${{ secrets.PAT }}
-          repository: cuongnt02/portfolio-client
-          run-id: ${{ github.event.client_payload.frontend_run_id }}
-          path: portfolio-server/dist-frontend/
-
       - name: Bump frontend version on event
         if: github.event.action == 'frontend-release'
         run: |
@@ -57,6 +39,26 @@ jobs:
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/cuongnt02/portfolio/actions/variables/NAME \
           -d '{"name":"BACKEND_VERSION","value":"${{ github.event.client_payload.version }}"}'
+
+      # Always checkout backend
+      - name: Checkout backend repo
+        uses: actions/checkout@v4
+        with:
+          repository: cuongnt02/portfolio-server
+          ref: ${{ vars.BACKEND_VERSION }}
+          path: portfolio-server
+
+      # Only fetch frontend dist if frontend release
+      - name: Download frontend dist
+        if: github.event.action == 'frontend-release'
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          github-token: ${{ secrets.PAT }}
+          repository: cuongnt02/portfolio-client
+          run-id: ${{ github.event.client_payload.frontend_run_id }}
+          path: portfolio-server/dist-frontend/
+
 
       - name: Configure SSH
         run: |
@@ -88,5 +90,5 @@ jobs:
           ANSIBLE_BECOME_PASS: ${{ secrets.ANSIBLE_BECOME_PASS }}
           APP_PORT: ${{ secrets.APP_PORT }}
         run: |
-          ansible-playbook build.yml -e release_version=$RELEASE_VERSION -v
+          ansible-playbook build.yml -v
           ansible-playbook -i $PORTFOLIO_VPS_HOST, --user=$PORTFOLIO_VPS_USER --key-file=~/.ssh/id_ed25519 -e ansible_become_pass=$ANSIBLE_BECOME_PASS  -e release_version=$RELEASE_VERSION -e app_port=$APP_PORT deploy.yml -v
