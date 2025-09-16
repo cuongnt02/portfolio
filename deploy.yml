@@ -24,8 +24,7 @@
     - name: Run container
       community.docker.docker_container:
         name: portfolio
-        image: "{{ docker_image }}"
-        tag: "{{ release_version }}"
+        image: "{{ docker_image }}:{{ release_version }}"
         state: started
         restart_policy: always
         published_ports:
