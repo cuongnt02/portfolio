@@ -26,7 +26,7 @@ jobs:
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.PAT_VAR }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/cuongnt02/portfolio/actions/variables/NAME \
+          https://api.github.com/repos/cuongnt02/portfolio/actions/variables/FRONTEND_VERSION \
           -d '{"name":"FRONTEND_VERSION","value":"${{ github.event.client_payload.version }}"}'
 
       - name: Bump backend version on event
@@ -37,7 +37,7 @@ jobs:
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.PAT_VAR }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/cuongnt02/portfolio/actions/variables/NAME \
+          https://api.github.com/repos/cuongnt02/portfolio/actions/variables/BACKEND_VERSION \
           -d '{"name":"BACKEND_VERSION","value":"${{ github.event.client_payload.version }}"}'
 
       - name: Set current front end run id
@@ -48,7 +48,7 @@ jobs:
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.PAT_VAR }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/cuongnt02/portfolio/actions/variables/NAME \
+          https://api.github.com/repos/cuongnt02/portfolio/actions/variables/FRONTEND_DIST_ID \
           -d '{"name":"FRONTEND_DIST_ID","value":"${{ github.event.client_payload.frontend_run_id }}"}'
 
       # Always checkout backend
