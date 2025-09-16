@@ -20,13 +20,17 @@
         cd portfolio-server
         ls -rtl dist-frontend
 
-    - name: Build Docker image
-      shell: |
-        cd portfolio-server
-        docker build -t {{ dockerhub_username }}/portfolio:{{ release_version }} .
-
     - name: Login to DockerHub
       shell: echo "{{ dockerhub_password }}" | docker login -u "{{ dockerhub_username }}" --password-stdin
 
-    - name: Push Docker image
-      shell: docker push {{ dockerhub_username }}/portfolio:{{ release_version }}
+    - name: Build ans Push Docker image
+      community.docker.docker_image:
+        name: "{{ dockerhub_username }}/portfolio"
+        source: build
+        state: present
+        build:
+          path: portfolio-server
+        tag: "{{ release_version }}"
+        push: true
+
+

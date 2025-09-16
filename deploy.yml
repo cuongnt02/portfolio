@@ -21,9 +21,6 @@
         tag: "latest"
         source: pull
 
-    - name: Set environment variable for port
-      shell: export PORT="{{ app_port }}"
-
     - name: Run container
       community.docker.docker_container:
         name: portfolio
