@@ -17,17 +17,17 @@
 
     - name: Log into Dockerhub
       community.docker.docker_login:
-        username: {{ dockerhub_username }}
-        password: {{ dockerhub_password }}
+        username: "{{ dockerhub_username }}"
+        password: "{{ dockerhub_password }}"
 
     - name: Build ans Push Docker image
       community.docker.docker_image:
-        name: {{ dockerhub_username }}/portfolio
+        name: "{{ dockerhub_username }}/portfolio"
         source: build
         state: present
         build:
           path: portfolio-server
-        tag: {{ release-version }}
+        tag: "{{ release-version }}"
         push: true
 
 
