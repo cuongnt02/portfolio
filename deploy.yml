@@ -18,7 +18,7 @@
     - name: Pull Docker image
       community.docker.docker_image:
         name: "{{ docker_image }}"
-        tag: "latest"
+        tag: "{{ release_version }}"
         source: pull
 
     - name: Run container
