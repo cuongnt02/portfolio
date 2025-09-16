@@ -20,7 +20,7 @@
         username: "{{ dockerhub_username }}"
         password: "{{ dockerhub_password }}"
 
-    - name: Build ans Push Docker image
+    - name: Build and Push Docker image
       community.docker.docker_image:
         name: "{{ dockerhub_username }}/portfolio"
         source: build
