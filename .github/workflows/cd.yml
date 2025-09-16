@@ -24,7 +24,7 @@ jobs:
           curl -L \
           -X PATCH \
           -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ secrets.PAT }}" \
+          -H "Authorization: Bearer ${{ secrets.PAT_VAR }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/cuongnt02/portfolio/actions/variables/NAME \
           -d '{"name":"FRONTEND_VERSION","value":"${{ github.event.client_payload.version }}"}'
@@ -35,7 +35,7 @@ jobs:
           curl -L \
           -X PATCH \
           -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ secrets.PAT }}" \
+          -H "Authorization: Bearer ${{ secrets.PAT_VAR }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/cuongnt02/portfolio/actions/variables/NAME \
           -d '{"name":"BACKEND_VERSION","value":"${{ github.event.client_payload.version }}"}'
@@ -46,7 +46,7 @@ jobs:
           curl -L \
           -X PATCH \
           -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ secrets.PAT }}" \
+          -H "Authorization: Bearer ${{ secrets.PAT_VAR }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/cuongnt02/portfolio/actions/variables/NAME \
           -d '{"name":"FRONTEND_DIST_ID","value":"${{ github.event.client_payload.frontend_run_id }}"}'
