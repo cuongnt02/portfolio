@@ -27,7 +27,7 @@
         state: present
         build:
           path: portfolio-server
-        tag: "{{ release-version }}"
+        tag: "{{ release_version }}"
         push: true
 
 
