@@ -6,6 +6,8 @@ on:
 
 env:
   SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+  CURRENT_FRONTEND_VERSION: ${{ vars.FRONTEND_VERSION }}
+  CURRENT_BACKEND_VERSION: ${{ vars.BACKEND_VERSION }}
 
 jobs:
   deploy:
@@ -28,6 +30,9 @@ jobs:
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/cuongnt02/portfolio/actions/variables/FRONTEND_VERSION \
           -d '{"name":"FRONTEND_VERSION","value":"${{ github.event.client_payload.version }}"}'
+          echo "CURRENT_FRONTEND_VERSION=${{ github.event.client_payload.version }}" >> $GITHUB_ENV
+
+
 
       - name: Bump backend version on event
         if: github.event.action == 'backend-release'
@@ -39,6 +44,7 @@ jobs:
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/cuongnt02/portfolio/actions/variables/BACKEND_VERSION \
           -d '{"name":"BACKEND_VERSION","value":"${{ github.event.client_payload.version }}"}'
+          echo "CURRENT_BACKEND_VERSION=${{ github.event.client_payload.version }}" >> $GITHUB_ENV
 
       - name: Set current front end run id
         if: github.event.action == 'frontend-release'
@@ -103,7 +109,7 @@ jobs:
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
           PORTFOLIO_VPS_HOST: ${{ secrets.PORTFOLIO_VPS_HOST }}
           PORTFOLIO_VPS_USER: ${{ secrets.PORTFOLIO_VPS_USER }}
-          RELEASE_VERSION: ${{ vars.FRONTEND_VERSION }}-${{ vars.BACKEND_VERSION }}
+          RELEASE_VERSION: $CURRENT_FRONTEND_VERSION-$CURRENT_BACKEND_VERSION
           GITHUB_EVENT_TYPE: ${{ github.event.action }}
           ANSIBLE_BECOME_PASS: ${{ secrets.ANSIBLE_BECOME_PASS }}
           APP_PORT: ${{ secrets.APP_PORT }}
